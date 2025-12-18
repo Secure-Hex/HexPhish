@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Configuracion SMTP | HexPhish{% endblock %}
+{% block header %}Configuracion SMTP interna{% endblock %}
+{% block content %}
+<section class="panel">
+  <form method="post" class="form two-cols">
+    {{ csrf_input() }}
+    <label>
+      Nombre remitente
+      <input type="text" name="from_name" value="{{ config.from_name if config else '' }}" placeholder="HexPhish">
+    </label>
+    <label>
+      Correo remitente
+      <input type="email" name="from_email" value="{{ config.from_email if config else '' }}" placeholder="no-reply@empresa.cl">
+    </label>
+    <label>
+      SMTP host
+      <input type="text" name="smtp_host" value="{{ config.smtp_host if config else '' }}" placeholder="smtp.empresa.cl">
+    </label>
+    <label>
+      SMTP puerto
+      <input type="number" name="smtp_port" value="{{ config.smtp_port if config else '' }}" placeholder="587">
+    </label>
+    <label>
+      SMTP usuario
+      <input type="text" name="smtp_username" value="{{ config.smtp_username if config else '' }}" placeholder="usuario">
+    </label>
+    <label>
+      SMTP contrasena
+      <input type="password" name="smtp_password" placeholder="{% if config and config.smtp_password %}Mantener contrasena actual{% else %}********{% endif %}">
+    </label>
+    <label class="checkbox full">
+      <input type="checkbox" name="smtp_use_tls" {% if not config or config.smtp_use_tls %}checked{% endif %}>
+      Usar STARTTLS
+    </label>
+    <label class="checkbox full">
+      <input type="checkbox" name="smtp_use_ssl" {% if config and config.smtp_use_ssl %}checked{% endif %}>
+      Usar SSL directo
+    </label>
+    <label>
+      Correo de prueba
+      <input type="email" name="test_email" value="{{ test_email or '' }}" placeholder="tester@empresa.cl">
+    </label>
+    <p class="subtle full">Se usa para enviar credenciales, MFA y recuperacion.</p>
+    <div class="form-actions">
+      <button type="submit" class="btn primary">Guardar</button>
+      <button type="submit" class="btn ghost" formaction="{{ url_for('email_settings_test') }}">Probar SMTP</button>
+      <a class="btn ghost" href="{{ url_for('dashboard') }}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Configurar MFA | HexPhish{% endblock %}
+{% block header %}Configurar MFA{% endblock %}
+{% block content %}
+<section class="panel">
+  <form method="post" class="form">
+    {{ csrf_input() }}
+    <p class="subtle">Debes configurar MFA para continuar.</p>
+    <label class="checkbox">
+      <input type="radio" name="mfa_method" value="email" required>
+      MFA por correo
+    </label>
+    <label class="checkbox">
+      <input type="radio" name="mfa_method" value="totp" required>
+      MFA por TOTP (Authenticator)
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn primary">Continuar</button>
+      <a class="btn ghost" href="{{ url_for('logout') }}">Salir</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

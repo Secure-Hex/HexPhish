@@ -8,11 +8,13 @@
     <a class="btn primary" href="{{ url_for('user_create') }}">Nuevo usuario</a>
   </div>
   {% if users %}
-  <div class="table" style="--table-columns: repeat(3, 1fr) 140px;">
+  <div class="table" style="--table-columns: repeat(5, 1fr) 170px;">
     <div class="table-head">
       <span>Usuario</span>
       <span>Correo</span>
       <span>Rol</span>
+      <span>Estado</span>
+      <span>MFA</span>
       <span>Acciones</span>
     </div>
     {% for user in users %}
@@ -20,12 +22,18 @@
       <span>{{ user.username }}</span>
       <span>{{ user.email }}</span>
       <span>{% if user.is_admin %}Admin{% else %}Operador{% endif %}</span>
+      <span>{% if user.is_active %}Activo{% else %}Inactivo{% endif %}</span>
+      <span>{{ user.mfa_method or 'Sin MFA' }}</span>
       <span class="table-actions">
         <a class="link" href="{{ url_for('user_reset', user_id=user.id) }}">Reset</a>
         {% if g.user.id != user.id %}
-        <form method="post" action="{{ url_for('user_delete', user_id=user.id) }}" onsubmit="return confirm('Eliminar usuario?');">
+        <form method="post" action="{{ url_for('user_delete', user_id=user.id) }}" onsubmit="return confirm('{% if user.is_active %}Desactivar usuario?{% else %}Reactivar usuario?{% endif %}');">
           {{ csrf_input() }}
-          <button class="link danger" type="submit">Eliminar</button>
+          <button class="link danger" type="submit">{% if user.is_active %}Desactivar{% else %}Reactivar{% endif %}</button>
+        </form>
+        <form method="post" action="{{ url_for('user_reset_mfa', user_id=user.id) }}" onsubmit="return confirm('Reiniciar MFA y forzar cambio de clave?');">
+          {{ csrf_input() }}
+          <button class="link" type="submit">Reset MFA</button>
         </form>
         {% endif %}
       </span>

@@ -1,7 +1,8 @@
 import os
+import secrets
 
 import click
-from flask import Flask, abort, g, request, session
+from flask import Flask, abort, flash, g, redirect, request, session, url_for
 from markupsafe import Markup
 
 from .csrf import CSRF_COOKIE_NAME, ensure_csrf_session, get_csrf_token, validate_csrf_token
@@ -12,6 +13,7 @@ from .routes import campaigns as campaign_routes
 from .routes import domains as domain_routes
 from .routes import errors as error_routes
 from .routes import main as main_routes
+from .routes import settings as settings_routes
 from .routes import tracking as tracking_routes
 from .routes import users as user_routes
 
@@ -55,6 +57,38 @@ def create_app():
             g.user = None
         else:
             g.user = get_db().get(User, user_id)
+
+    @app.before_request
+    def enforce_session_token():
+        if getattr(g, "user", None):
+            if not g.user.session_token:
+                g.user.session_token = secrets.token_urlsafe(32)
+                get_db().commit()
+                session["session_token"] = g.user.session_token
+                return None
+            if session.get("session_token") != g.user.session_token:
+                flash("Sesion expirada. Inicia nuevamente.", "error")
+                session.clear()
+                return redirect(url_for("login"))
+
+    @app.before_request
+    def enforce_password_change():
+        if getattr(g, "user", None) and g.user.must_change_password:
+            allowed_endpoints = {"change_password", "logout", "static"}
+            if request.endpoint is None:
+                return None
+            if request.endpoint.startswith("static"):
+                return None
+            if request.endpoint not in allowed_endpoints:
+                return redirect(url_for("change_password"))
+
+    @app.before_request
+    def enforce_active_user():
+        if getattr(g, "user", None) and not g.user.is_active:
+            flash("Cuenta desactivada.", "error")
+            session.pop("user_id", None)
+            session.pop("pending_user_id", None)
+            return redirect(url_for("login"))
 
     @app.before_request
     def csrf_protect():
@@ -110,5 +144,6 @@ def create_app():
     user_routes.register(app)
     error_routes.register(app)
     tracking_routes.register(app)
+    settings_routes.register(app)
 
     return app

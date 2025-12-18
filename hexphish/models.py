@@ -15,6 +15,12 @@ class User(Base):
     email = Column(String(255), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
     is_admin = Column(Boolean, nullable=False, default=False)
+    must_change_password = Column(Boolean, nullable=False, default=False)
+    is_active = Column(Boolean, nullable=False, default=True)
+    session_token = Column(String(64))
+    mfa_method = Column(String(20))
+    mfa_secret = Column(String(64))
+    mfa_enabled = Column(Boolean, nullable=False, default=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
 
@@ -80,3 +86,42 @@ class CsrfToken(Base):
     session_key = Column(String(128), unique=True, nullable=False)
     token = Column(String(128), nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+class AppConfig(Base):
+    __tablename__ = "app_config"
+
+    id = Column(Integer, primary_key=True)
+    smtp_host = Column(String(255))
+    smtp_port = Column(Integer)
+    smtp_username = Column(String(255))
+    smtp_password = Column(String(255))
+    smtp_use_tls = Column(Boolean, nullable=False, default=True)
+    smtp_use_ssl = Column(Boolean, nullable=False, default=False)
+    from_name = Column(String(255))
+    from_email = Column(String(255))
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+class PasswordResetToken(Base):
+    __tablename__ = "password_reset_tokens"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    token_hash = Column(String(128), nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    used_at = Column(DateTime)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    user = relationship("User")
+
+
+class MfaChallenge(Base):
+    __tablename__ = "mfa_challenges"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    code_hash = Column(String(128), nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    used_at = Column(DateTime)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    user = relationship("User")

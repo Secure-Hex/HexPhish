@@ -26,8 +26,10 @@
           <a href="{{ url_for('dashboard') }}" class="nav-link">Panel</a>
           <a href="{{ url_for('campaigns') }}" class="nav-link">Campanas</a>
           <a href="{{ url_for('domains') }}" class="nav-link">Dominios</a>
+          <a href="{{ url_for('profile') }}" class="nav-link">Mi perfil</a>
           {% if g.user.is_admin %}
           <a href="{{ url_for('users') }}" class="nav-link">Usuarios</a>
+          <a href="{{ url_for('email_settings') }}" class="nav-link">Configuracion</a>
           {% endif %}
         </nav>
         {% else %}

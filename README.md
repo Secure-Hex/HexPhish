@@ -11,11 +11,21 @@ HexPhish es una plataforma open source para gestionar campanas de phishing etico
 
 - Gestion completa de campanas con estados, cliente, dominio, contenido y landing.
 - Control de dominios con configuracion SMTP, remitente, TLS/SSL y prueba de conexion/envio.
+- SMTP interno para notificaciones y recuperacion de cuentas.
 - Destinatarios por campana (carga masiva) con tracking individual de envio, apertura y click.
 - KPIs automaticos: enviados, aperturas, clicks, open rate y click rate.
 - Reportes descargables en PDF y CSV con detalle por destinatario.
 - Contenido personalizable con tokens `{{recipient_name}}`, `{{recipient_email}}`, `{{open_pixel}}`, `{{click_url}}`.
 - Roles y administracion de usuarios (alta, baja, reset de contrasena).
+- Desactivacion/reactivacion de cuentas sin eliminarlas.
+- Recuperacion de contrasena por email con enlaces de un solo uso (2 horas).
+- Cambio de contrasena obligatorio en el primer acceso del usuario.
+- MFA obligatorio para todos los usuarios (correo o TOTP).
+- Los usuarios pueden cambiar su metodo MFA desde la plataforma.
+- Los administradores pueden reiniciar el MFA de otros usuarios.
+- El reinicio de MFA fuerza cambio de contrasena en el siguiente login.
+- Al reiniciar MFA se invalida la sesion activa del usuario.
+- Perfil de usuario con cambio de correo protegido por contrasena.
 - UI moderna y responsive enfocada en operacion diaria.
 
 ## Stack
@@ -24,6 +34,8 @@ HexPhish es una plataforma open source para gestionar campanas de phishing etico
 - Flask
 - SQLAlchemy (SQLite por defecto)
 - ReportLab (PDF)
+- PyOTP (TOTP)
+- qrcode (QR para TOTP)
 
 ## Instalacion rapida
 
@@ -60,6 +72,8 @@ flask --app app.py run
 3. Carga destinatarios (uno por linea).
 4. Envia correos pendientes desde el detalle de la campana.
 5. Revisa KPIs y descarga reportes en PDF/CSV.
+6. Configura el SMTP interno para credenciales y recuperacion de contrasenas.
+7. En el primer login configura MFA (correo o TOTP).
 
 ## Tokens de contenido
 
@@ -90,6 +104,10 @@ HexPhish esta pensado para simulaciones de seguridad autorizadas. Usa siempre do
 - La base SQLite se guarda en `instance/hexphish.db`.
 - Si cambias el esquema, recrea la base antes de iniciar.
 - Para produccion, configura `HEXPHISH_SECRET_KEY` y considera una base externa.
+- La creacion de usuarios genera una contrasena aleatoria enviada por correo.
+- Sin SMTP interno configurado no se podran enviar credenciales ni enlaces de recuperacion.
+- MFA por correo requiere SMTP interno configurado; TOTP no.
+- Si un usuario esta desactivado no podra iniciar sesion hasta ser reactivado por un admin.
 
 ## Licencia
 

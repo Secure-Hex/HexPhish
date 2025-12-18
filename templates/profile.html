@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Mi perfil | HexPhish{% endblock %}
+{% block header %}Mi perfil{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="panel-header">
+    <h4>Cuenta</h4>
+  </div>
+  <div class="detail-grid">
+    <div>
+      <span class="card-label">Usuario</span>
+      <p>{{ user.username }}</p>
+    </div>
+    <div>
+      <span class="card-label">Rol</span>
+      <p>{% if user.is_admin %}Admin{% else %}Operador{% endif %}</p>
+    </div>
+    <div>
+      <span class="card-label">MFA</span>
+      <p>{{ user.mfa_method or 'Sin configurar' }}</p>
+    </div>
+    <div>
+      <span class="card-label">Estado</span>
+      <p>{% if user.is_active %}Activo{% else %}Inactivo{% endif %}</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <h4>Actualizar correo</h4>
+  </div>
+  <form method="post" class="form two-cols">
+    {{ csrf_input() }}
+    <label>
+      Correo actual
+      <input type="email" value="{{ user.email }}" disabled>
+    </label>
+    <label>
+      Nuevo correo
+      <input type="email" name="email" placeholder="usuario@empresa.cl" required>
+    </label>
+    <label class="full">
+      Contrasena actual
+      <input type="password" name="current_password" required>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn primary">Actualizar correo</button>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <h4>Seguridad</h4>
+  </div>
+  <div class="cta-grid">
+    <a class="cta" href="{{ url_for('change_password') }}">
+      <h4>Cambiar contrasena</h4>
+      <p>Actualiza tu clave de acceso.</p>
+    </a>
+    <a class="cta" href="{{ url_for('change_mfa') }}">
+      <h4>Administrar MFA</h4>
+      <p>Configura correo o TOTP.</p>
+    </a>
+  </div>
+</section>
+{% endblock %}

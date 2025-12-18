@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Mi MFA | HexPhish{% endblock %}
+{% block header %}Mi MFA{% endblock %}
+{% block content %}
+<section class="panel">
+  <form method="post" class="form">
+    {{ csrf_input() }}
+    <p class="subtle">Metodo actual: {{ user.mfa_method or 'Sin configurar' }}</p>
+    <label class="checkbox">
+      <input type="radio" name="mfa_method" value="email" {% if user.mfa_method == 'email' %}checked{% endif %} required>
+      MFA por correo
+    </label>
+    <label class="checkbox">
+      <input type="radio" name="mfa_method" value="totp" {% if user.mfa_method == 'totp' %}checked{% endif %} required>
+      MFA por TOTP (Authenticator)
+    </label>
+    {% if user.mfa_method == 'totp' %}
+    <label class="checkbox">
+      <input type="checkbox" name="rotate_totp">
+      Regenerar secreto TOTP
+    </label>
+    {% endif %}
+
+    {% if totp_setup %}
+    <div class="detail-block">
+      <h5>Configura tu app Authenticator</h5>
+      <p class="subtle">Escanea el QR o agrega este secreto manualmente.</p>
+      {% if qr_code %}
+      <img class="qr" src="data:image/png;base64,{{ qr_code }}" alt="QR TOTP">
+      {% endif %}
+      <div class="token-list">
+        <span class="token">{{ user.mfa_secret }}</span>
+      </div>
+      {% if otpauth_url %}
+      <p class="subtle">URI: {{ otpauth_url }}</p>
+      {% endif %}
+    </div>
+    <label>
+      Codigo TOTP
+      <input type="text" name="code" inputmode="numeric" autocomplete="one-time-code">
+    </label>
+    {% endif %}
+
+    <label>
+      Contrasena actual
+      <input type="password" name="current_password" required>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn primary">Guardar MFA</button>
+      <a class="btn ghost" href="{{ url_for('dashboard') }}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

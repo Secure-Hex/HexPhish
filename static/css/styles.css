@@ -205,6 +205,11 @@ button.link {
   color: #a43b2b;
 }
 
+.subtle-link {
+  font-size: 13px;
+  color: var(--muted);
+}
+
 .flash-group {
   display: flex;
   flex-direction: column;
@@ -528,6 +533,16 @@ button.link {
   padding: 6px 10px;
   font-size: 12px;
   color: #915036;
+}
+
+.qr {
+  width: 160px;
+  height: 160px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  padding: 8px;
+  margin: 10px 0;
 }
 
 .truncate {

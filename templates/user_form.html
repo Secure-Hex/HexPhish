@@ -13,14 +13,11 @@
       Correo
       <input type="email" name="email" placeholder="operador@empresa.cl" required>
     </label>
-    <label>
-      Contrasena inicial
-      <input type="password" name="password" required>
-    </label>
     <label class="checkbox">
       <input type="checkbox" name="is_admin">
       Rol administrador
     </label>
+    <p class="subtle full">La contrasena inicial se genera automaticamente y se envia por correo.</p>
     <div class="form-actions">
       <button type="submit" class="btn primary">Crear usuario</button>
       <a class="btn ghost" href="{{ url_for('users') }}">Cancelar</a>

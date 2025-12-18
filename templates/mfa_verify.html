@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Verificacion MFA | HexPhish{% endblock %}
+{% block header %}Verificacion MFA{% endblock %}
+{% block content %}
+<section class="panel">
+  {% if method == 'totp' and show_secret %}
+  <div class="detail-block">
+    <h5>Configura tu app Authenticator</h5>
+    <p class="subtle">Escanea el QR o agrega este secreto manualmente.</p>
+    {% if qr_code %}
+    <img class="qr" src="data:image/png;base64,{{ qr_code }}" alt="QR TOTP">
+    {% endif %}
+    <div class="token-list">
+      <span class="token">{{ user.mfa_secret }}</span>
+    </div>
+    {% if otpauth_url %}
+    <p class="subtle">URI: {{ otpauth_url }}</p>
+    {% endif %}
+  </div>
+  {% endif %}
+  <form method="post" class="form">
+    {{ csrf_input() }}
+    {% if method == 'email' %}
+    <p class="subtle">Revisa tu correo y escribe el codigo de verificacion.</p>
+    {% else %}
+    <p class="subtle">Ingresa el codigo de tu app Authenticator.</p>
+    {% endif %}
+    <label>
+      Codigo
+      <input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" required>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn primary">Verificar</button>
+      <a class="btn ghost" href="{{ url_for('logout') }}">Salir</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
