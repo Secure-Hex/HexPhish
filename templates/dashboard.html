@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Panel | HexPhish{% endblock %}
+{% block header %}Panel operativo{% endblock %}
+{% block content %}
+<section class="grid-cards">
+  <div class="card">
+    <span class="card-label">Campanas registradas</span>
+    <h3>{{ stats.campaigns }}</h3>
+    <p>Campanas registradas en la plataforma.</p>
+  </div>
+  <div class="card">
+    <span class="card-label">Dominios disponibles</span>
+    <h3>{{ stats.domains }}</h3>
+    <p>Dominios activos para envios.</p>
+  </div>
+  <div class="card">
+    <span class="card-label">Usuarios internos</span>
+    <h3>{{ stats.users }}</h3>
+    <p>Equipo operativo y administradores.</p>
+  </div>
+</section>
+<section class="panel">
+  <div class="panel-header">
+    <h4>Ultimas campanas</h4>
+    <a class="link" href="{{ url_for('campaigns') }}">Ver todas</a>
+  </div>
+  {% if latest_campaigns %}
+  <div class="table" style="--table-columns: repeat(4, 1fr);">
+    <div class="table-head">
+      <span>Campana</span>
+      <span>Cliente</span>
+      <span>Estado</span>
+      <span>Dominio</span>
+    </div>
+    {% for campaign in latest_campaigns %}
+    <div class="table-row">
+      <span>{{ campaign.name }}</span>
+      <span>{{ campaign.client }}</span>
+      <span class="status status-{{ campaign.status }}">{{ campaign.status }}</span>
+      <span>{{ campaign.send_domain.domain if campaign.send_domain else 'Sin dominio' }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">Aun no hay campanas registradas.</p>
+  {% endif %}
+</section>
+<section class="cta-grid">
+  <a class="cta" href="{{ url_for('campaign_create') }}">
+    <h4>Nueva campana</h4>
+    <p>Planifique un nuevo ejercicio de phishing.</p>
+  </a>
+  <a class="cta" href="{{ url_for('domain_create') }}">
+    <h4>Agregar dominio</h4>
+    <p>Controle remitentes con dominios seguros.</p>
+  </a>
+  {% if g.user.is_admin %}
+  <a class="cta" href="{{ url_for('user_create') }}">
+    <h4>Nuevo usuario</h4>
+    <p>Incorpore operadores autorizados.</p>
+  </a>
+  {% endif %}
+</section>
+{% endblock %}

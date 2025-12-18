@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Acceso denegado | HexPhish{% endblock %}
+{% block header %}Acceso denegado{% endblock %}
+{% block content %}
+<section class="panel">
+  <h3>No tienes permisos para esta accion.</h3>
+  <p class="subtle">Si necesitas acceso administrativo, contacta a un administrador.</p>
+  <a class="btn ghost" href="{{ url_for('dashboard') }}">Volver al panel</a>
+</section>
+{% endblock %}

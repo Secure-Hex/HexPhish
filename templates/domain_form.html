@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}{% if domain %}Editar{% else %}Nuevo{% endif %} dominio | HexPhish{% endblock %}
+{% block header %}{% if domain %}Editar dominio{% else %}Nuevo dominio{% endif %}{% endblock %}
+{% block content %}
+<section class="panel">
+  <form method="post" class="form two-cols">
+    {% if domain %}
+    <input type="hidden" name="domain_id" value="{{ domain.id }}">
+    {% endif %}
+    <label>
+      Dominio
+      <input type="text" name="domain" value="{{ domain.domain if domain else '' }}" placeholder="empresa-mail.com" required>
+    </label>
+    <label>
+      Nombre visible
+      <input type="text" name="display_name" value="{{ domain.display_name if domain else '' }}" placeholder="HexPhish Mail" required>
+    </label>
+    <label class="checkbox full">
+      <input type="checkbox" name="is_active" {% if not domain or domain.is_active %}checked{% endif %}>
+      Dominio activo para envios
+    </label>
+    <label>
+      Nombre remitente
+      <input type="text" name="from_name" value="{{ domain.from_name if domain else '' }}" placeholder="HexPhish">
+    </label>
+    <label>
+      Correo remitente
+      <input type="email" name="from_email" value="{{ domain.from_email if domain else '' }}" placeholder="alertas@empresa.cl">
+    </label>
+    <label>
+      SMTP host
+      <input type="text" name="smtp_host" value="{{ domain.smtp_host if domain else '' }}" placeholder="smtp.empresa.cl">
+    </label>
+    <label>
+      SMTP puerto
+      <input type="number" name="smtp_port" value="{{ domain.smtp_port if domain else '' }}" placeholder="587">
+    </label>
+    <label>
+      SMTP usuario
+      <input type="text" name="smtp_username" value="{{ domain.smtp_username if domain else '' }}" placeholder="usuario">
+    </label>
+    <label>
+      SMTP contrasena
+      <input type="password" name="smtp_password" placeholder="{% if domain and domain.smtp_password %}Mantener contrasena actual{% else %}********{% endif %}">
+    </label>
+    <label class="checkbox full">
+      <input type="checkbox" name="smtp_use_tls" {% if not domain or domain.smtp_use_tls %}checked{% endif %}>
+      Usar STARTTLS
+    </label>
+    <label class="checkbox full">
+      <input type="checkbox" name="smtp_use_ssl" {% if domain and domain.smtp_use_ssl %}checked{% endif %}>
+      Usar SSL directo
+    </label>
+    <label>
+      Correo de prueba
+      <input type="email" name="test_email" value="{{ test_email or '' }}" placeholder="tester@empresa.cl">
+    </label>
+    <p class="subtle full">Si ingresas un correo, se enviara un mensaje de prueba.</p>
+    <div class="form-actions">
+      <button type="submit" class="btn primary">Guardar</button>
+      <button type="submit" class="btn ghost" formaction="{{ url_for('domain_test_smtp') }}">Probar SMTP</button>
+      <a class="btn ghost" href="{{ url_for('domains') }}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

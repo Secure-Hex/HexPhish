@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block title %}Campana {{ campaign.name }} | HexPhish{% endblock %}
+{% block header %}Campana: {{ campaign.name }}{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="panel-header">
+    <h4>Resumen operativo</h4>
+    <div class="panel-actions">
+      <a class="btn ghost" href="{{ url_for('campaign_report_pdf', campaign_id=campaign.id) }}">Descargar PDF</a>
+      <a class="btn ghost" href="{{ url_for('campaign_report_csv', campaign_id=campaign.id) }}">Descargar CSV</a>
+      <a class="btn ghost" href="{{ url_for('campaign_edit', campaign_id=campaign.id) }}">Editar</a>
+      <a class="btn ghost" href="{{ url_for('campaigns') }}">Volver</a>
+    </div>
+  </div>
+  <div class="detail-grid">
+    <div>
+      <span class="card-label">Cliente</span>
+      <p>{{ campaign.client }}</p>
+    </div>
+    <div>
+      <span class="card-label">Estado</span>
+      <p class="status status-{{ campaign.status }}">{{ campaign.status }}</p>
+    </div>
+    <div>
+      <span class="card-label">Dominio de envio</span>
+      <p>{{ campaign.send_domain.domain if campaign.send_domain else 'Sin dominio' }}</p>
+    </div>
+    <div>
+      <span class="card-label">Asunto</span>
+      <p>{{ campaign.subject or 'Sin asunto' }}</p>
+    </div>
+    <div>
+      <span class="card-label">Landing</span>
+      <p>{{ campaign.landing_url or 'Sin landing' }}</p>
+    </div>
+  </div>
+  <div class="detail-block">
+    <h5>Tokens disponibles</h5>
+    <div class="token-list">
+      <span class="token">{{ "{{recipient_name}}" }}</span>
+      <span class="token">{{ "{{recipient_email}}" }}</span>
+      <span class="token">{{ "{{open_pixel}}" }}</span>
+      <span class="token">{{ "{{click_url}}" }}</span>
+    </div>
+    <p class="subtle">Inserta estos tokens en el cuerpo del correo para personalizacion y tracking.</p>
+  </div>
+  <div class="detail-block">
+    <h5>Contenido del correo</h5>
+    <div class="content-preview">
+      <div>
+        <p class="card-label">Texto plano</p>
+        <pre>{{ campaign.body_text or 'Sin texto' }}</pre>
+      </div>
+      <div>
+        <p class="card-label">HTML</p>
+        <pre>{{ campaign.body_html or 'Sin HTML' }}</pre>
+      </div>
+    </div>
+  </div>
+  {% if campaign.description %}
+  <div class="detail-block">
+    <h5>Descripcion</h5>
+    <p class="subtle">{{ campaign.description }}</p>
+  </div>
+  {% endif %}
+</section>
+
+<section class="grid-cards">
+  <div class="card">
+    <span class="card-label">Destinatarios</span>
+    <h3>{{ total_recipients }}</h3>
+    <p>Total cargado en la campana.</p>
+  </div>
+  <div class="card">
+    <span class="card-label">Enviados</span>
+    <h3>{{ sent_count }}</h3>
+    <p>Correos enviados con exito.</p>
+  </div>
+  <div class="card">
+    <span class="card-label">Aperturas</span>
+    <h3>{{ opened_count }}</h3>
+    <p>Open rate {{ '%.1f'|format(open_rate) }}%.</p>
+  </div>
+  <div class="card">
+    <span class="card-label">Clicks</span>
+    <h3>{{ clicked_count }}</h3>
+    <p>Click rate {{ '%.1f'|format(click_rate) }}%.</p>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <h4>Destinatarios</h4>
+    <div class="pill-group">
+      <span class="pill">Pendientes {{ recipient_stats['pending'] }}</span>
+      <span class="pill">Enviados {{ recipient_stats['sent'] }}</span>
+      <span class="pill">Fallidos {{ recipient_stats['failed'] }}</span>
+    </div>
+  </div>
+
+  <form method="post" action="{{ url_for('campaign_add_recipients', campaign_id=campaign.id) }}" class="form">
+    <label class="full">
+      Agregar destinatarios (uno por linea, opcional nombre,email)
+      <textarea name="recipients_bulk" rows="4" placeholder="Ana Perez, ana@cliente.com\nana@cliente.com"></textarea>
+    </label>
+    <div class="form-actions">
+      <button class="btn primary" type="submit">Agregar destinatarios</button>
+    </div>
+  </form>
+
+  <form method="post" action="{{ url_for('campaign_send', campaign_id=campaign.id) }}" class="inline-form">
+    <button class="btn primary" type="submit">Enviar correos pendientes</button>
+    <span class="helper">Se usa el dominio seleccionado y SMTP configurado.</span>
+  </form>
+
+  {% if recipients %}
+  <div class="table" style="--table-columns: 1.2fr 1.6fr 1fr 1fr 1fr 1.4fr 140px;">
+    <div class="table-head">
+      <span>Nombre</span>
+      <span>Correo</span>
+      <span>Estado</span>
+      <span>Apertura</span>
+      <span>Click</span>
+      <span>Ultimo error</span>
+      <span>Acciones</span>
+    </div>
+    {% for recipient in recipients %}
+    <div class="table-row">
+      <span>{{ recipient.full_name or '-' }}</span>
+      <span>{{ recipient.email }}</span>
+      <span class="status status-{{ recipient.status }}">{{ recipient.status }}</span>
+      <span>{{ recipient.opened_at.strftime('%Y-%m-%d %H:%M') if recipient.opened_at else 'No' }}</span>
+      <span>{{ recipient.clicked_at.strftime('%Y-%m-%d %H:%M') if recipient.clicked_at else 'No' }}</span>
+      <span class="truncate">{{ recipient.last_error or '-' }}</span>
+      <span class="table-actions">
+        <form method="post" action="{{ url_for('campaign_delete_recipient', campaign_id=campaign.id, recipient_id=recipient.id) }}" onsubmit="return confirm('Eliminar destinatario?');">
+          <button class="link danger" type="submit">Eliminar</button>
+        </form>
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No hay destinatarios cargados.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Dominios | HexPhish{% endblock %}
+{% block header %}Dominios{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="panel-header">
+    <h4>Dominios configurados</h4>
+    <a class="btn primary" href="{{ url_for('domain_create') }}">Agregar dominio</a>
+  </div>
+  {% if domains %}
+  <div class="table" style="--table-columns: repeat(4, 1fr) 140px;">
+    <div class="table-head">
+      <span>Dominio</span>
+      <span>Nombre visible</span>
+      <span>Estado</span>
+      <span>SMTP</span>
+      <span>Acciones</span>
+    </div>
+    {% for domain in domains %}
+    <div class="table-row">
+      <span>{{ domain.domain }}</span>
+      <span>{{ domain.display_name }}</span>
+      <span>{% if domain.is_active %}Activo{% else %}Inactivo{% endif %}</span>
+      <span>{{ domain.smtp_host or 'Sin SMTP' }}</span>
+      <span class="table-actions">
+        <a class="link" href="{{ url_for('domain_edit', domain_id=domain.id) }}">Editar</a>
+        <form method="post" action="{{ url_for('domain_delete', domain_id=domain.id) }}" onsubmit="return confirm('Eliminar dominio?');">
+          <button class="link danger" type="submit">Eliminar</button>
+        </form>
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No hay dominios configurados.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Campanas | HexPhish{% endblock %}
+{% block header %}Campanas{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="panel-header">
+    <h4>Listado de campanas</h4>
+    <a class="btn primary" href="{{ url_for('campaign_create') }}">Nueva campana</a>
+  </div>
+  {% if campaigns %}
+  <div class="table" style="--table-columns: repeat(4, 1fr) 140px;">
+    <div class="table-head">
+      <span>Nombre</span>
+      <span>Cliente</span>
+      <span>Estado</span>
+      <span>Dominio</span>
+      <span>Acciones</span>
+    </div>
+    {% for campaign in campaigns %}
+    <div class="table-row">
+      <span>{{ campaign.name }}</span>
+      <span>{{ campaign.client }}</span>
+      <span class="status status-{{ campaign.status }}">{{ campaign.status }}</span>
+      <span>{{ campaign.send_domain.domain if campaign.send_domain else 'Sin dominio' }}</span>
+      <span class="table-actions">
+        <a class="link" href="{{ url_for('campaign_detail', campaign_id=campaign.id) }}">Ver</a>
+        <a class="link" href="{{ url_for('campaign_edit', campaign_id=campaign.id) }}">Editar</a>
+        <form method="post" action="{{ url_for('campaign_delete', campaign_id=campaign.id) }}" onsubmit="return confirm('Eliminar campana?');">
+          <button class="link danger" type="submit">Eliminar</button>
+        </form>
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No hay campanas creadas.</p>
+  {% endif %}
+</section>
+{% endblock %}

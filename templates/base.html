@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}HexPhish{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  </head>
+  <body class="{{ body_class or '' }}">
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+    <div class="page">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">HP</span>
+          <div>
+            <h1>HexPhish</h1>
+            <p>Ethical Phishing Platform</p>
+          </div>
+        </div>
+        {% if g.user %}
+        <nav class="nav">
+          <a href="{{ url_for('dashboard') }}" class="nav-link">Panel</a>
+          <a href="{{ url_for('campaigns') }}" class="nav-link">Campanas</a>
+          <a href="{{ url_for('domains') }}" class="nav-link">Dominios</a>
+          {% if g.user.is_admin %}
+          <a href="{{ url_for('users') }}" class="nav-link">Usuarios</a>
+          {% endif %}
+        </nav>
+        {% else %}
+        <div class="nav-muted">
+          <p>Gestione campanas y dominios con visibilidad total.</p>
+        </div>
+        {% endif %}
+        <div class="sidebar-footer">
+          <span>Security Team</span>
+        </div>
+      </aside>
+      <div class="content">
+        <header class="topbar">
+          <div>
+            <h2>{% block header %}{% endblock %}</h2>
+            <p class="subtle">Uso autorizado para simulaciones de seguridad.</p>
+          </div>
+          {% if g.user %}
+          <div class="user-pill">
+            <span class="user-name">{{ g.user.username }}</span>
+            <span class="user-role">{% if g.user.is_admin %}Admin{% else %}Operador{% endif %}</span>
+            <a href="{{ url_for('logout') }}" class="link">Salir</a>
+          </div>
+          {% endif %}
+        </header>
+        <main>
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <div class="flash-group">
+                {% for category, message in messages %}
+                  <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+          {% block content %}{% endblock %}
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

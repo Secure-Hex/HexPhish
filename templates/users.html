@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios | HexPhish{% endblock %}
+{% block header %}Usuarios{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="panel-header">
+    <h4>Gestion de usuarios</h4>
+    <a class="btn primary" href="{{ url_for('user_create') }}">Nuevo usuario</a>
+  </div>
+  {% if users %}
+  <div class="table" style="--table-columns: repeat(3, 1fr) 140px;">
+    <div class="table-head">
+      <span>Usuario</span>
+      <span>Correo</span>
+      <span>Rol</span>
+      <span>Acciones</span>
+    </div>
+    {% for user in users %}
+    <div class="table-row">
+      <span>{{ user.username }}</span>
+      <span>{{ user.email }}</span>
+      <span>{% if user.is_admin %}Admin{% else %}Operador{% endif %}</span>
+      <span class="table-actions">
+        <a class="link" href="{{ url_for('user_reset', user_id=user.id) }}">Reset</a>
+        {% if g.user.id != user.id %}
+        <form method="post" action="{{ url_for('user_delete', user_id=user.id) }}" onsubmit="return confirm('Eliminar usuario?');">
+          <button class="link danger" type="submit">Eliminar</button>
+        </form>
+        {% endif %}
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No hay usuarios registrados.</p>
+  {% endif %}
+</section>
+{% endblock %}

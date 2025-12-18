@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}{% if campaign %}Editar{% else %}Nueva{% endif %} campana | HexPhish{% endblock %}
+{% block header %}{% if campaign %}Editar campana{% else %}Nueva campana{% endif %}{% endblock %}
+{% block content %}
+<section class="panel">
+  <form method="post" class="form two-cols">
+    <label>
+      Nombre de campana
+      <input type="text" name="name" value="{{ campaign.name if campaign else '' }}" required>
+    </label>
+    <label>
+      Cliente
+      <input type="text" name="client" value="{{ campaign.client if campaign else '' }}" required>
+    </label>
+    <label>
+      Estado
+      <select name="status">
+        {% for status in statuses %}
+        <option value="{{ status }}" {% if campaign and campaign.status == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      Dominio de envio
+      <select name="send_domain_id">
+        <option value="">Sin dominio</option>
+        {% for domain in domains %}
+        <option value="{{ domain.id }}" {% if campaign and campaign.send_domain_id == domain.id %}selected{% endif %}>{{ domain.display_name }} ({{ domain.domain }})</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      URL de landing
+      <input type="url" name="landing_url" value="{{ campaign.landing_url if campaign else '' }}" placeholder="https://login.empresa.cl">
+    </label>
+    <label>
+      Asunto del correo
+      <input type="text" name="subject" value="{{ campaign.subject if campaign else '' }}" placeholder="Simulacion de acceso seguro">
+    </label>
+    <label class="full">
+      Cuerpo (texto plano)
+      <textarea name="body_text" rows="5" placeholder="Hola, ...">{{ campaign.body_text if campaign else '' }}</textarea>
+    </label>
+    <label class="full">
+      Cuerpo (HTML opcional)
+      <textarea name="body_html" rows="6" placeholder="<p>Hola, ...</p>">{{ campaign.body_html if campaign else '' }}</textarea>
+    </label>
+    <label class="full">
+      Descripcion
+      <textarea name="description" rows="4">{{ campaign.description if campaign else '' }}</textarea>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn primary">Guardar</button>
+      <a class="btn ghost" href="{{ url_for('campaigns') }}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

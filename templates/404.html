@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}No encontrado | HexPhish{% endblock %}
+{% block header %}Pagina no encontrada{% endblock %}
+{% block content %}
+<section class="panel">
+  <h3>La ruta solicitada no existe.</h3>
+  <p class="subtle">Verifica el enlace o vuelve al panel principal.</p>
+  <a class="btn ghost" href="{{ url_for('dashboard') }}">Volver al panel</a>
+</section>
+{% endblock %}
