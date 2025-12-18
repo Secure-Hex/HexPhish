@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-1f6feb?style=flat-square)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/flask-2.x-0f172a?style=flat-square)](https://flask.palletsprojects.com/)
 [![SQLAlchemy](https://img.shields.io/badge/sqlalchemy-2.x-bb0000?style=flat-square)](https://www.sqlalchemy.org/)
-[![License](https://img.shields.io/badge/license-TBD-6b7280?style=flat-square)](#licencia)
+[![License](https://img.shields.io/badge/license-GPL--3.0-6b7280?style=flat-square)](LICENSE)
 
 HexPhish es una plataforma open source para gestionar campanas de phishing etico de punta a punta. Permite planificar, enviar, medir y reportar simulaciones con control por dominio y trazabilidad por destinatario, todo desde una interfaz profesional.
 
@@ -89,4 +89,4 @@ HexPhish esta pensado para simulaciones de seguridad autorizadas. Usa siempre do
 
 ## Licencia
 
-Define la licencia open source que prefieras (MIT, Apache-2.0, GPL, etc.).
+GPL-3.0. Ver `LICENSE`.
