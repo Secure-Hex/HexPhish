@@ -43,6 +43,10 @@ Se crea un usuario administrador inicial:
 - Usuario: `admin`
 - Contrasena: `ChangeMe!`
 
+Claves/valores por defecto:
+- `HEXPHISH_SECRET_KEY`: `dev-change-me`
+- Base de datos: `instance/hexphish.db`
+
 ## Ejecutar la app
 
 ```bash

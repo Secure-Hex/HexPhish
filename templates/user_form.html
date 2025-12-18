@@ -4,6 +4,7 @@
 {% block content %}
 <section class="panel">
   <form method="post" class="form two-cols">
+    {{ csrf_input() }}
     <label>
       Usuario
       <input type="text" name="username" placeholder="operador" required>

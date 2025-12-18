@@ -99,6 +99,7 @@
   </div>
 
   <form method="post" action="{{ url_for('campaign_add_recipients', campaign_id=campaign.id) }}" class="form">
+    {{ csrf_input() }}
     <label class="full">
       Agregar destinatarios (uno por linea, opcional nombre,email)
       <textarea name="recipients_bulk" rows="4" placeholder="Ana Perez, ana@cliente.com\nana@cliente.com"></textarea>
@@ -109,6 +110,7 @@
   </form>
 
   <form method="post" action="{{ url_for('campaign_send', campaign_id=campaign.id) }}" class="inline-form">
+    {{ csrf_input() }}
     <button class="btn primary" type="submit">Enviar correos pendientes</button>
     <span class="helper">Se usa el dominio seleccionado y SMTP configurado.</span>
   </form>
@@ -134,6 +136,7 @@
       <span class="truncate">{{ recipient.last_error or '-' }}</span>
       <span class="table-actions">
         <form method="post" action="{{ url_for('campaign_delete_recipient', campaign_id=campaign.id, recipient_id=recipient.id) }}" onsubmit="return confirm('Eliminar destinatario?');">
+          {{ csrf_input() }}
           <button class="link danger" type="submit">Eliminar</button>
         </form>
       </span>

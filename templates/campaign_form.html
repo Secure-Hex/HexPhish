@@ -4,6 +4,7 @@
 {% block content %}
 <section class="panel">
   <form method="post" class="form two-cols">
+    {{ csrf_input() }}
     <label>
       Nombre de campana
       <input type="text" name="name" value="{{ campaign.name if campaign else '' }}" required>

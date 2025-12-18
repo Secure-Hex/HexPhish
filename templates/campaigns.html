@@ -26,6 +26,7 @@
         <a class="link" href="{{ url_for('campaign_detail', campaign_id=campaign.id) }}">Ver</a>
         <a class="link" href="{{ url_for('campaign_edit', campaign_id=campaign.id) }}">Editar</a>
         <form method="post" action="{{ url_for('campaign_delete', campaign_id=campaign.id) }}" onsubmit="return confirm('Eliminar campana?');">
+          {{ csrf_input() }}
           <button class="link danger" type="submit">Eliminar</button>
         </form>
       </span>

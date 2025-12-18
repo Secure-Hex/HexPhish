@@ -4,6 +4,7 @@
 {% block content %}
 <section class="panel">
   <form method="post" class="form two-cols">
+    {{ csrf_input() }}
     {% if domain %}
     <input type="hidden" name="domain_id" value="{{ domain.id }}">
     {% endif %}

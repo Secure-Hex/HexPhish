@@ -7,6 +7,7 @@
     <h3>Ingreso seguro</h3>
     <p>Plataforma interna para gestionar campanas de phishing etico.</p>
     <form method="post" class="form">
+      {{ csrf_input() }}
       <label>
         Usuario o correo
         <input type="text" name="identifier" placeholder="operador@empresa.cl" required>

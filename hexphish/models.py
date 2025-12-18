@@ -71,3 +71,12 @@ class Recipient(Base):
     last_error = Column(String(500))
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     campaign = relationship("Campaign", back_populates="recipients")
+
+
+class CsrfToken(Base):
+    __tablename__ = "csrf_tokens"
+
+    id = Column(Integer, primary_key=True)
+    session_key = Column(String(128), unique=True, nullable=False)
+    token = Column(String(128), nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
